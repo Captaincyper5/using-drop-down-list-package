@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Pagetwo extends StatefulWidget {
+  const Pagetwo({super.key});
   @override
-  State<Home> createState() => _MyState();
+  State<Pagetwo> createState() => _MyState();
 }
 
-class _MyState extends State<Home> {
+class _MyState extends State<Pagetwo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,25 +22,25 @@ class _MyState extends State<Home> {
             icon: Icon(Icons.menu),
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: Text("page1"),
+                child: Text("home"),
                 value: "one",
+                onTap: () {
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil("home", (route) => false);
+                },
+              ),
+              PopupMenuItem(
+                child: Text("page1"),
+                value: "two",
                 onTap: () {
                   Navigator.of(context)
                       .pushNamedAndRemoveUntil("page1", (route) => false);
                 },
               ),
-              PopupMenuItem(
-                child: Text("page2"),
-                value: "two",
-                onTap: () {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil("page2", (route) => false);
-                },
-              ),
             ],
           ),
         ],
-        title: Text('home', style: TextStyle(fontWeight: FontWeight(800))),
+        title: Text('Page2', style: TextStyle(fontWeight: FontWeight(800))),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
@@ -48,7 +48,7 @@ class _MyState extends State<Home> {
         height: 600,
         width: 360,
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [Colors.orange, Colors.yellow]),
+          gradient: LinearGradient(colors: [Colors.amber, Colors.green]),
         ),
       ),
     );
