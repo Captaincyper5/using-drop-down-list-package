@@ -1,55 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:app2/searchdelegate.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
+
   @override
   State<Home> createState() => _MyState();
 }
 
 class _MyState extends State<Home> {
+  // استخدام القائمة للتحكم في الأبعاد بأمان
+  final List<double> cardWidths = [200.0, 300.0];
+  final List title = ["to search click the icon", "اضغط على الايقونة للبحث"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('welcome                    مرحبا بك'),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         actions: [
-          PopupMenuButton(
-            onOpened: () {
-              print("openned");
+          IconButton(
+            onPressed: () {
+              showSearch(context: context, delegate: Custom());
             },
-            onCanceled: () {
-              print("closed");
-            },
-            icon: Icon(Icons.menu),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text("page1"),
-                value: "one",
-                onTap: () {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil("page1", (route) => false);
-                },
-              ),
-              PopupMenuItem(
-                child: Text("page2"),
-                value: "two",
-                onTap: () {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil("page2", (route) => false);
-                },
-              ),
-            ],
+            icon: const Icon(
+              Icons.search,
+            ), // تغيير الأيقونة إلى بحث لتكون أوضح للمستخدم
           ),
         ],
-        title: Text('home', style: TextStyle(fontWeight: FontWeight(800))),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
       ),
-      body: Container(
-        height: 600,
-        width: 360,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [Colors.orange, Colors.yellow]),
-        ),
+      body: Stack(
+        children: [
+          Positioned(
+            top: 250,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            child: ListView.builder(
+              itemCount: title.length,
+              itemBuilder: (context, i) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(title[i], textAlign: TextAlign.center),
+                    SizedBox(width: 10),
+                    Icon(Icons.search),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
