@@ -1,8 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:drop_down_list/drop_down_list.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -11,114 +9,258 @@ class Home extends StatefulWidget {
 }
 
 class _MyState extends State<Home> {
-  late Future<List> _apiFuture;
-  Future<List> api() async {
-    try {
-      var response = await get(Uri.parse("https://jsonplaceholder.org/posts"))
-          .timeout(Duration(seconds: 5));
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body) as List;
-      } else {
-        throw Exception("server error: ${response.statusCode}");
-      }
-    } on SocketException {
-      throw Exception("no internet connection available");
-    } catch (e) {
-      throw Exception("unexpected error: $e");
-    }
-  }
-
-  Future<void> _refresh() async {
-    setState(() {
-      _apiFuture = api();
-    });
-    await _apiFuture;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _apiFuture = api();
-  }
-
+  final TextEditingController _country = TextEditingController();
+  final TextEditingController _age = TextEditingController();
+  final TextEditingController _firstName = TextEditingController();
+  final TextEditingController _lastName = TextEditingController();
+  final TextEditingController _year = TextEditingController();
+  final TextEditingController _month = TextEditingController();
+  final TextEditingController _day = TextEditingController();
+  final List<String> _countries = [
+    "sudan",
+    "egypt",
+    "algeria",
+    "moroco",
+    "tunnies",
+    "eritrea",
+    "ethiopia",
+    "lybia",
+    "somalia",
+  ];
+  final List<String> _months = [
+    "januarey",
+    "februarey",
+    "mars",
+    "april",
+    "may",
+    "june",
+    "july",
+    "augest",
+    "septemper",
+    "october",
+    "novamber",
+    "december",
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My App'),
+        title: Center(
+          child: Text('Sign up', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
-      body: FutureBuilder<List>(
-        future: _apiFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Check your internet connection    ",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(Icons.warning, color: Colors.red),
-                      ],
+      body: ListView(
+        children: [
+          Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _Custom3(
+                      controller: _firstName,
+                      title: "first name",
                     ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.warning, color: Colors.red),
-                        Text(
-                          "تحقق من اتصال الانترنت    ",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    InkWell(
-                      onTap: _refresh,
-                      borderRadius: BorderRadius.circular(100),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Icon(Icons.restart_alt), Text("Retry")],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return RefreshIndicator(
-              onRefresh: _refresh,
-              child: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) => Card(
-                  child: ListTile(
-                    title: Text("${snapshot.data![index]['title']}"),
-                    subtitle: Text("${snapshot.data![index]['content']}"),
                   ),
+                  Expanded(
+                    child: _Custom3(controller: _lastName, title: "last name"),
+                  ),
+                ],
+              ),
+              _Custom2(
+                controller: _age,
+                data: 28,
+                builder: ((index) => index + 18),
+                title: "select your age",
+              ),
+              _Custom1(
+                controller: _country,
+                data: _countries,
+                title: "country",
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 10, 240, 0),
+                child: Text(
+                  "date of brith",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-            );
-          }
-          return SizedBox.shrink();
+              Row(
+                children: [
+                  Expanded(
+                    child: _Custom2(
+                      controller: _year,
+                      data: 30,
+                      builder: ((index) => "${1997 + index}"),
+                      title: "year",
+                    ),
+                  ),
+                  Expanded(
+                    child: _Custom1(
+                      controller: _month,
+                      data: _months,
+                      title: "month",
+                    ),
+                  ),
+                  Expanded(
+                    child: _Custom2(
+                      controller: _day,
+                      data: 31,
+                      builder: (index) => "${index + 1}",
+                      title: "day",
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Custom1 extends StatefulWidget {
+  const _Custom1({
+    required this.controller,
+    required this.data,
+    required this.title,
+  });
+  final TextEditingController controller;
+  final List<String> data;
+  final String title;
+
+  @override
+  State<_Custom1> createState() => _Custom1State();
+}
+
+class _Custom1State extends State<_Custom1> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      child: TextFormField(
+        readOnly: true,
+        decoration: InputDecoration(
+          labelText: widget.title,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
+        ),
+        controller: widget.controller,
+        onTap: () {
+          DropDownState(
+            dropDown: DropDown(
+              // 1. تحديد العنوان وخيار البحث
+              submitButtonText: "تم",
+              clearButtonText: "مسح",
+              // 2. تمرير البيانات مع تحديد النوع (String مثلاً)
+              data: [
+                ...List.generate(widget.data.length, (index) {
+                  return SelectedListItem<String>(
+                    data: widget.data[index],
+                    isSelected: false,
+                  );
+                }),
+              ],
+
+              // 3. الاستجابة عند اختيار عنصر
+              onSelected: (List<SelectedListItem<dynamic>> selectedList) {
+                if (selectedList.isNotEmpty) {
+                  // الحصول على العنصر المختار
+                  String selectedValue = selectedList.first.data;
+                  widget.controller.text = selectedValue;
+                  setState(() {});
+                }
+              },
+
+              // 4. خيارات إضافية
+              enableMultipleSelection: false, // اختيار مفرد
+            ),
+          ).showModal(context);
         },
+      ),
+    );
+  }
+}
+
+class _Custom2 extends StatefulWidget {
+  const _Custom2({
+    required this.controller,
+    required this.data,
+    required this.builder,
+    required this.title,
+  });
+  final TextEditingController controller;
+  final int data;
+  final dynamic Function(int index) builder;
+  final String title;
+  @override
+  State<_Custom2> createState() => _Custom2State();
+}
+
+class _Custom2State extends State<_Custom2> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      child: TextFormField(
+        readOnly: true,
+        decoration: InputDecoration(
+          labelText: widget.title,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
+        ),
+        controller: widget.controller,
+        onTap: () {
+          DropDownState(
+            dropDown: DropDown(
+              // 1. تحديد العنوان وخيار البحث
+              submitButtonText: "تم",
+              clearButtonText: "مسح",
+              // 2. تمرير البيانات مع تحديد النوع (String مثلاً)
+              data: [
+                ...List.generate(widget.data, (index) {
+                  var day = widget.builder(index).toString();
+                  return SelectedListItem<String>(
+                    data: day.toString(),
+                    isSelected: false,
+                  );
+                }),
+              ],
+
+              // 3. الاستجابة عند اختيار عنصر
+              onSelected: (List<SelectedListItem<dynamic>> selectedList) {
+                if (selectedList.isNotEmpty) {
+                  // الحصول على العنصر المختار
+                  String selectedValue = selectedList.first.data;
+                  widget.controller.text = selectedValue;
+                  setState(() {});
+                }
+              },
+
+              // 4. خيارات إضافية
+              enableMultipleSelection: false, // اختيار مفرد
+            ),
+          ).showModal(context);
+        },
+      ),
+    );
+  }
+}
+
+class _Custom3 extends StatelessWidget {
+  const _Custom3({required this.controller, required this.title});
+  final TextEditingController controller;
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          label: Text(title),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
+        ),
       ),
     );
   }
