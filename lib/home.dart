@@ -219,9 +219,9 @@ class _Custom2State extends State<_Custom2> {
               // 2. تمرير البيانات مع تحديد النوع (String مثلاً)
               data: [
                 ...List.generate(widget.data, (index) {
-                  var day = widget.builder(index).toString();
+                  var data = widget.builder(index).toString();
                   return SelectedListItem<String>(
-                    data: day.toString(),
+                    data: data.toString(),
                     isSelected: false,
                   );
                 }),
